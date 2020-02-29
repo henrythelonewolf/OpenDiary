@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "186210319130",
+    "firebase_url": "https://opendiary-d2730.firebaseio.com",
+    "project_id": "opendiary-d2730",
+    "storage_bucket": "opendiary-d2730.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:186210319130:android:4ab6358d5807f04448caa3",
+        "android_client_info": {
+          "package_name": "com.example.opendiary"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "186210319130-g6dlm708uttd5juqsgi4987rl8rfuk6f.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.opendiary",
+            "certificate_hash": "f0114df95d413ffc4c97c2c47ad21737233bd65c"
+          }
+        },
+        {
+          "client_id": "186210319130-lof8va37jb1db9lo1ro4bgcob3tu8qkp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCVzIOmK0WXQ07tO-dYPm4v9sIK7WZjc1M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "186210319130-lof8va37jb1db9lo1ro4bgcob3tu8qkp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
