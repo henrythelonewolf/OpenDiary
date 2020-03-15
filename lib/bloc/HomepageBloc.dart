@@ -1,34 +1,28 @@
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:firebase_remote_config/firebase_remote_config.dart';
-import 'package:google_sign_in/google_sign_in.dart';
+import 'package:opendiary/globals.dart' as globals;
 import 'package:opendiary/locator/service_locator.dart';
+import 'package:opendiary/models/Database.dart';
+import 'package:opendiary/repositories/LocalDatabaseRepository.dart';
 import 'package:opendiary/services/NavigationService.dart';
 import 'package:rxdart/subjects.dart';
 
-import 'package:opendiary/globals.dart' as globals;
-
 class HomepageBloc {
-  GoogleSignIn _googleSignIn = locator<GoogleSignIn>();
+  LocalDatabaseRepository _localDatabaseRepository = locator<LocalDatabaseRepository>();
   NavigationService navigationService = locator<NavigationService>();
 
-  final PublishSubject<List<String>> _records = PublishSubject();
-  Stream<List<String>> get records => _records.stream;
-  
+  final PublishSubject<List<Diary>> _records = PublishSubject();
+  Stream<List<Diary>> get records => _records.stream;
+
   HomepageBloc() {
-    // init and forget
     initializeData();
   }
 
   Future<void> initializeData() async {
     globals.remoteConfigInstance = await RemoteConfig.instance;
-    if (_googleSignIn.currentUser == null) {
-      log("Severe error - user is not logged in");
-      return;
-    }
-    
-    _records.sink.add(["sample data"]);
+    var records = await _localDatabaseRepository.getDiaries();
+    _records.sink.add(records);
   }
 
   handleButtonTap() {
