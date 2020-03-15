@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:opendiary/bloc/HomepageBloc.dart';
 import 'package:opendiary/bloc/LoginBloc.dart';
+import 'package:opendiary/constants/route_constants.dart';
+import 'package:opendiary/models/Database.dart';
 
 class Homepage extends StatefulWidget {
   @override
@@ -43,23 +45,36 @@ class _HomepageState extends State<Homepage> {
     title: Text("OpenDiary")
   );
 
-  Widget _buildStreamBody() => StreamBuilder(
-    stream: _bloc.records,
-    builder: (context, snap) => snap.hasData == true ? _buildListView() : Container(),
-  );
-
-  Widget _buildListView() => Container(
-    child: Text("this is a proper view with data"),
+  Widget _buildListView(List<Diary> diaries) => Container(
+    child: diaries.length == 0 
+      ? Center( child: Text('No Records.'),)
+      : ListView(
+        children: diaries.map((diary) => ListTile(
+          onTap: () => {},
+          title: Text(diary?.title), subtitle: Text(diary?.createdDateTime),
+        )).toList(),
+      ),
   );
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: _buildAppBar(),
-      drawer: _buildDrawer(),
-      body: _buildStreamBody(),
-      floatingActionButton: FloatingActionButton(onPressed: () => _bloc.handleButtonTap(),
-      child: Icon(Icons.add),)
+    return StreamBuilder(
+      stream: _bloc.records,
+      builder: (context, snap) => Stack(
+        alignment: Alignment.center,
+        children: <Widget>[
+          Scaffold(
+            appBar: _buildAppBar(),
+            drawer: _buildDrawer(),
+            body: snap.hasData == false ? Container() : _buildListView(snap.data),
+            floatingActionButton: FloatingActionButton(
+              onPressed: () => Navigator.pushNamed(context, RouteConstants.adddiary),
+              child: Icon(Icons.add),
+            )
+          ),
+          snap.hasData == false ? CircularProgressIndicator() : Container(),
+        ],
+      )
     );
   }
 }
