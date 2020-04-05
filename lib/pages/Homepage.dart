@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:opendiary/bloc/HomepageBloc.dart';
 import 'package:opendiary/bloc/LoginBloc.dart';
 import 'package:opendiary/constants/route_constants.dart';
-import 'package:opendiary/models/Database.dart';
+import 'package:opendiary/locator/service_locator.dart';
+import 'package:opendiary/services/NavigationService.dart';
+import 'package:opendiary/viewmodels/DiaryViewModel.dart';
 
 class Homepage extends StatefulWidget {
   @override
@@ -10,12 +12,22 @@ class Homepage extends StatefulWidget {
 }
 
 class _HomepageState extends State<Homepage> {
+  final _navigationService = locator<NavigationService>();
   HomepageBloc _bloc = HomepageBloc();
   LoginBloc _loginBloc = LoginBloc();
 
   @override initState() {
     super.initState();
+    _loginBloc.error.listen((data) => data == 'Success' ? onLogoutSuccess() : onLoginBlocError(data));
     _loginBloc.doAutoSignIn();
+  }
+
+  void onLogoutSuccess() {
+    _navigationService.navigateAndReplace(RouteConstants.landing);
+  }
+
+  void onLoginBlocError(String errorMessage) {
+
   }
 
   Widget _buildDrawer() => Drawer(
@@ -45,15 +57,26 @@ class _HomepageState extends State<Homepage> {
     title: Text("OpenDiary")
   );
 
-  Widget _buildListView(List<Diary> diaries) => Container(
-    child: diaries.length == 0 
-      ? Center( child: Text('No Records.'),)
-      : ListView(
-        children: diaries.map((diary) => ListTile(
-          onTap: () => {},
-          title: Text(diary?.title), subtitle: Text(diary?.createdDateTime),
-        )).toList(),
-      ),
+  Widget _buildListView(List<DiaryViewModel> diaries) => RefreshIndicator(
+    onRefresh: _bloc.fetchDiaries,
+    child: Container(
+      child: diaries.length == 0 
+        ? SingleChildScrollView(
+            physics: AlwaysScrollableScrollPhysics(), 
+            child: Container(
+              height: MediaQuery.of(context).size.height - MediaQuery.of(context).padding.top, 
+              child: Center(
+                child: Text('No Records.'),
+              )
+            )
+          )
+        : ListView(
+          children: diaries.map((diary) => ListTile(
+            onTap: () => {},
+            title: Text(diary?.title), subtitle: Text(diary?.createdDateTime),
+          )).toList(),
+        ),
+    )
   );
 
   @override
