@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_auth_buttons/flutter_auth_buttons.dart';
 import 'package:opendiary/bloc/LoginBloc.dart';
+import 'package:opendiary/constants/route_constants.dart';
+import 'package:opendiary/locator/service_locator.dart';
+import 'package:opendiary/services/NavigationService.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -8,12 +11,22 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  LoginBloc _bloc = LoginBloc();
+  final _navigationService = locator<NavigationService>();
+  final _loginBloc = LoginBloc();
 
   @override initState() {
     super.initState();
-    _bloc.doAutoSignIn(navigateToHome: true);
+    _loginBloc.error.listen((data) => data == 'Success' ? onLoginSuccess() : onError(data));
+    _loginBloc.doAutoSignIn(navigateToHome: true);
   } 
+
+  void onLoginSuccess() {
+    _navigationService.navigateAndReplace(RouteConstants.home);
+  }
+
+  void onError(String errorMessage) {
+
+  }
 
   _buildAppLogo() => Text("OpenDiary", 
   style: TextStyle(
@@ -30,7 +43,7 @@ class _LoginPageState extends State<LoginPage> {
           children: <Widget>[
             _buildAppLogo(),
             Container(height: 70,),
-            GoogleSignInButton(onPressed: () => _bloc.handleGoogleSignIn()),
+            GoogleSignInButton(onPressed: () => _loginBloc.handleGoogleSignIn()),
           ],
         ),
       ),

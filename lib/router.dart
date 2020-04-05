@@ -9,13 +9,13 @@ class Router {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case RouteConstants.landing:
-        return MaterialPageRoute(builder: (_) => LoginPage());
+        return MaterialPageRoute(settings: settings, builder: (_) => LoginPage());
       case RouteConstants.home:
-        return MaterialPageRoute(builder: (_) => Homepage());
+        return MaterialPageRoute(settings: settings, builder: (_) => Homepage());
       case RouteConstants.adddiary:
-        return MaterialPageRoute(builder: (_) => NewDiaryEditor());
+        return MaterialPageRoute(settings: settings, builder: (_) => NewDiaryEditor());
       default:
-        return MaterialPageRoute(builder: (_) => Homepage());
+        return MaterialPageRoute(settings: settings, builder: (_) => Homepage());
     }
   }
 }
