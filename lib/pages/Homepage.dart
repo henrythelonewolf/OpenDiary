@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:logging/logging.dart';
 import 'package:opendiary/bloc/HomepageBloc.dart';
 import 'package:opendiary/bloc/LoginBloc.dart';
 import 'package:opendiary/constants/route_constants.dart';
 import 'package:opendiary/locator/service_locator.dart';
+import 'package:opendiary/main.dart';
 import 'package:opendiary/services/NavigationService.dart';
 import 'package:opendiary/viewmodels/DiaryViewModel.dart';
 
@@ -11,15 +13,33 @@ class Homepage extends StatefulWidget {
   _HomepageState createState() => _HomepageState();
 }
 
-class _HomepageState extends State<Homepage> {
+class _HomepageState extends State<Homepage> with RouteAware {
   final _navigationService = locator<NavigationService>();
-  HomepageBloc _bloc = HomepageBloc();
+  final _logger = Logger('Homepage');
+  HomepageBloc _homepageBloc = HomepageBloc();
   LoginBloc _loginBloc = LoginBloc();
+
+  @override void didChangeDependencies() {
+    super.didChangeDependencies();
+    routeObserver.subscribe(this, ModalRoute.of(context));
+  }
+
+  @override dispose() {
+    _homepageBloc.dispose();
+    _loginBloc.dispose();
+    routeObserver.unsubscribe(this);
+    super.dispose();
+  }
 
   @override initState() {
     super.initState();
     _loginBloc.error.listen((data) => data == 'Success' ? onLogoutSuccess() : onLoginBlocError(data));
     _loginBloc.doAutoSignIn();
+  }
+
+  void didPopNext() {
+    _logger.info('Popped detected. Refreshing listview.');
+    _homepageBloc.fetchDiaries();
   }
 
   void onLogoutSuccess() {
@@ -58,7 +78,7 @@ class _HomepageState extends State<Homepage> {
   );
 
   Widget _buildListView(List<DiaryViewModel> diaries) => RefreshIndicator(
-    onRefresh: _bloc.fetchDiaries,
+    onRefresh: _homepageBloc.fetchDiaries,
     child: Container(
       child: diaries.length == 0 
         ? SingleChildScrollView(
@@ -82,7 +102,7 @@ class _HomepageState extends State<Homepage> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-      stream: _bloc.records,
+      stream: _homepageBloc.records,
       builder: (context, snap) => Stack(
         alignment: Alignment.center,
         children: <Widget>[

@@ -28,7 +28,6 @@ class _NewDiaryEditorState extends State<NewDiaryEditor> {
 
   void onSaveSuccess() {
     _navigationService.goBack();
-    _navigationService.navigateAndReplace(RouteConstants.home);
   }
 
   void onError(String data) {

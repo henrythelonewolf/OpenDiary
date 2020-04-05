@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:opendiary/constants/route_constants.dart';
+import 'package:opendiary/main.dart';
 import 'package:opendiary/manager/DialogManager.dart';
 import 'package:opendiary/router.dart';
 import 'package:opendiary/services/NavigationService.dart';
@@ -15,6 +16,7 @@ class App extends StatelessWidget {
           builder: (context) => DialogManager(child: widget)
         ),
       ),
+      navigatorObservers: <NavigatorObserver>[routeObserver],
       theme: ThemeData(primarySwatch: Colors.blue),
       navigatorKey: locator<NavigationService>().navigatorKey,
       onGenerateRoute: Router.generateRoute,

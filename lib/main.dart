@@ -10,6 +10,8 @@ void logWrapped(String text) {
   pattern.allMatches(text).forEach((match) => log(match.group(0)));
 }
 
+final routeObserver = RouteObserver<PageRoute>();
+
 void main() {
   Logger.root.level = Level.ALL;
   Logger.root.onRecord.listen((data) {
