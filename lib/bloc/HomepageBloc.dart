@@ -27,8 +27,12 @@ class HomepageBloc {
     await fetchDiaries();
   }
 
-  Future<void> fetchDiaries() async {
-    var records = await _localDatabaseRepository.getDiaries();
+  Future<void> fetchDiaries({isHardRefresh = false}) async {
+    var response = await _localDatabaseRepository.getDiaries(isHardRefresh);
+    if (response.error != null) {
+      // todo: errorhandling
+    }
+    var records = response.diaries;
     var viewModels = records.map((r) => _constructViewModels(r)).toList();
     _records.sink.add(viewModels);
   }

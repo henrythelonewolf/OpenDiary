@@ -78,7 +78,7 @@ class _HomepageState extends State<Homepage> with RouteAware {
   );
 
   Widget _buildListView(List<DiaryViewModel> diaries) => RefreshIndicator(
-    onRefresh: _homepageBloc.fetchDiaries,
+    onRefresh: () => _homepageBloc.fetchDiaries(isHardRefresh: true),
     child: Container(
       child: diaries.length == 0 
         ? SingleChildScrollView(
